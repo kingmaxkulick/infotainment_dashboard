@@ -1,0 +1,14 @@
+# Byte-compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.venv/
+
+# Generated files
+*.DS_Store
