@@ -1,89 +1,86 @@
-# Infotainment Backend
-API service that converts CAN bus messages from VCU into HTTP endpoints for the infotainment dashboard.
+# Infotainment Dashboard
+PyQt6-based graphical interface for displaying vehicle information and controls.
 
 ## Overview
-This backend service listens for CAN messages from the VCU, processes and stores the vehicle data, and provides REST API endpoints for the infotainment dashboard. It acts as a bridge between the vehicle's CAN network and the user interface.
+This application provides a modern, touch-friendly dashboard interface for vehicle information. It displays vehicle state, metrics, and fault information in real-time, with support for multiple widget layouts and a charging state popup.
 
 ## System Architecture
 ```mermaid
-flowchart LR
-    subgraph "CAN Bus"
-        VCU[VCU Messages]
+flowchart TB
+    subgraph "Backend API"
+        API[REST Endpoints]
     end
 
-    subgraph "Backend Service"
-        CAN[CAN Service]
-        API[FastAPI Server]
-        Data[Vehicle Data Store]
+    subgraph "Dashboard UI"
+        Data[Data Service]
+        Widgets[Widget System]
+        Bottom[Bottom Bar]
         
-        CAN --> |"Parse Messages"| Data
-        Data --> |"Provide Data"| API
+        Data --> |"Update"| Widgets
+        Bottom --> |"Launch"| Widgets
     end
 
-    subgraph "Endpoints"
-        State["/vehicle_state"]
-        Fault["/fault_status"]
-        Metrics["/metrics/*"]
+    subgraph "Display Widgets"
+        State[Vehicle State]
+        Metrics[Vehicle Metrics]
+        Faults[Fault Display]
+        Charge[Charge Popup]
     end
 
-    VCU --> CAN
-    API --> State
-    API --> Fault
-    API --> Metrics
-    
-    State --> |"REST"| UI[Frontend]
-    Fault --> |"REST"| UI
-    Metrics --> |"REST"| UI
+    API --> |"Poll"| Data
+    Widgets --> State
+    Widgets --> Metrics
+    Widgets --> Faults
+    Widgets --> Charge
 ```
 
 ## Features
-- Real-time CAN message monitoring
-- Message parsing and state tracking
-- REST API endpoints
-- Fault status monitoring
-- Vehicle metrics processing
-- Connection status monitoring
+- Dynamic widget system
+- Real-time data updates
+- Touch-friendly interface
+- State-aware display
+- Charging status popup
+- Fault monitoring display
 
-## API Endpoints
-
-### Main Endpoints
-| Endpoint | Method | Description | Update Rate |
-|----------|--------|-------------|-------------|
-| /vehicle_data | GET | All vehicle data | 200ms |
-| /vehicle_state | GET | Current vehicle state | 100ms |
-| /fault_status | GET | Active faults | 100ms |
-
-### Metric Endpoints
-| Endpoint | Description |
-|----------|-------------|
-| /metrics/powertrain | Battery, motor, power data |
-| /metrics/tires | Tire temperature and pressure |
+## Widget Layout System
+- Empty: Single widget fills screen
+- Two Widgets: Split screen horizontally
+- Three Widgets: Split into thirds
+- Drag from bottom bar to add
+- Drag from top 15% to remove
+- Drag to reposition
 
 ## Project Structure
 ```
-infotainment_backend/
+infotainment_dashboard/
 ├── app/
-│   ├── api/
-│   │   └── endpoints.py    # API route definitions
-│   ├── core/
-│   │   └── constants.py    # Configuration and constants
-│   ├── models/
-│   │   └── vehicle_data.py # Data models
+│   ├── components/
+│   │   ├── charging_popup.py
+│   │   ├── draggable_button.py
+│   │   ├── draggable_widget.py
+│   │   ├── drop_area.py
+│   │   ├── fault_widget.py
+│   │   ├── state_widget.py
+│   │   └── vehicle_widget.py
 │   ├── services/
-│   │   └── can_service.py  # CAN message handling
-│   └── main.py            # FastAPI application
-├── server.py              # Entry point
-└── README.md
+│   │   └── data_service.py
+│   ├── utils/
+│   │   ├── constants.py
+│   │   └── image_utils.py
+│   └── windows/
+│       └── main_dashboard.py
+├── assets/
+│   └── modern_sports_car_offcenter_right.jpg
+└── main.py
 ```
 
 ## Prerequisites
-- Python
-- CAN interface configured
+- Python 3.11+
+- PyQt6
 - Required packages:
-  - fastapi
-  - uvicorn
-  - python-can
-  - pydantic
+  - PyQt6
+  - requests
+  - pillow
 
 ## Setup
 1. Create virtual environment:
@@ -97,59 +94,44 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Configure CAN interface:
+## Running the Dashboard
+1. Start the application:
 ```bash
-sudo ip link set can0 type can bitrate 500000
-sudo ip link set up can0
+python main.py
 ```
 
-## Running the Service
-1. Start the server:
-```bash
-python server.py
-```
+## Usage Guide
 
-2. Check API status:
-```bash
-curl http://localhost:8000/health
-```
+### Bottom Bar Apps
+- Navigation
+- Music
+- Climate
+- Phone
+- Vehicle Info
+- Settings
+- Charging (appears in charge state)
 
-## API Examples
+### Widget Management
+1. Drag app from bottom bar to display
+2. Drag from widget header to reposition
+3. Drag down from header to remove
+4. Maximum of three widgets
 
-### Get Vehicle State
-```bash
-curl http://localhost:8000/vehicle_state
-```
-Response:
-```json
-{
-    "primary_state": "PARK",
-    "sub_state": "READY",
-    "status_flags": ["BATTERY_OK", "SYSTEMS_CHECK_PASS"],
-    "fault_present": false,
-    "message_counter": 1234
-}
-```
-
-### Get Fault Status
-```bash
-curl http://localhost:8000/fault_status
-```
-Response:
-```json
-{
-    "active": false,
-    "source": null,
-    "type": null,
-    "severity": 0,
-    "timestamp": 0,
-    "counter": 0
-}
-```
+### Charging Mode
+- Popup appears automatically
+- Can be minimized/restored
+- Shows charge status and metrics
+- Available via bottom bar icon
 
 ## Development Notes
-- Backend runs on port 8000 by default
-- Monitors CAN messages in real-time
-- Updates vehicle data store on message receipt
-- Provides data to frontend via REST endpoints
-- Handles connection status and error monitoring
+- Uses QT6 for modern UI components
+- Polls backend API for updates
+- Handles connection status
+- Manages widget lifecycle
+- Provides touch-friendly interactions
+
+## Styling
+- Background blur when widgets present
+- Semi-transparent widgets
+- Color-coded status indicators
+- Modern automotive aesthetic
