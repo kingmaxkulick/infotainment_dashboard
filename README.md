@@ -1,5 +1,5 @@
 # Infotainment Backend
-REST API service that converts CAN bus messages from VCU into HTTP endpoints for the infotainment dashboard.
+API service that converts CAN bus messages from VCU into HTTP endpoints for the infotainment dashboard.
 
 ## Overview
 This backend service listens for CAN messages from the VCU, processes and stores the vehicle data, and provides REST API endpoints for the infotainment dashboard. It acts as a bridge between the vehicle's CAN network and the user interface.
