@@ -1,8 +1,8 @@
 # Infotainment Dashboard
-PyQt6-based graphical interface for displaying vehicle information and controls.
+PyQt6-based gui for displaying vehicle information and controls.
 
 ## Overview
-This application provides a modern, touch-friendly dashboard interface for vehicle information. It displays vehicle state, metrics, and fault information in real-time, with support for multiple widget layouts and a charging state popup.
+This application provides a touch screen dashboard interface for vehicle information. It displays vehicle state, metrics, and fault information in real-time, with support for multiple widget layouts and a charging state popup.
 
 ## System Architecture
 ```mermaid
@@ -35,12 +35,8 @@ flowchart TB
 ```
 
 ## Features
-- Dynamic widget system
+- Widget system
 - Real-time data updates
-- Touch-friendly interface
-- State-aware display
-- Charging status popup
-- Fault monitoring display
 
 ## Widget Layout System
 - Empty: Single widget fills screen
@@ -75,7 +71,7 @@ infotainment_dashboard/
 ```
 
 ## Prerequisites
-- Python 3.11+
+- Python
 - PyQt6
 - Required packages:
   - PyQt6
@@ -122,16 +118,3 @@ python main.py
 - Can be minimized/restored
 - Shows charge status and metrics
 - Available via bottom bar icon
-
-## Development Notes
-- Uses QT6 for modern UI components
-- Polls backend API for updates
-- Handles connection status
-- Manages widget lifecycle
-- Provides touch-friendly interactions
-
-## Styling
-- Background blur when widgets present
-- Semi-transparent widgets
-- Color-coded status indicators
-- Modern automotive aesthetic
