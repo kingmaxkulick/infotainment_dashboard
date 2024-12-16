@@ -77,7 +77,7 @@ infotainment_backend/
 ```
 
 ## Prerequisites
-- Python 3.11+
+- Python
 - CAN interface configured
 - Required packages:
   - fastapi
